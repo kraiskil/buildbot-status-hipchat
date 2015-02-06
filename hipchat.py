@@ -1,6 +1,8 @@
 from buildbot.status.base import StatusReceiverMultiService
 from buildbot.status.builder import Results, SUCCESS
 import os, urllib
+#from buildbot.status import base
+#from twisted.python import log
 
 
 class HipChatStatusPush(StatusReceiverMultiService):
@@ -42,4 +44,7 @@ class HipChatStatusPush(StatusReceiverMultiService):
       notify = "1"
 
     # Yes, we are in Twisted and shouldn't do os.system :)
-    os.system('curl -d "room_id=%s&from=Buildbot&message=%s&color=%s&notify=%s" https://api.hipchat.com/v1/rooms/message?auth_token=%s&format=json' % (self.room_id, message, color, notify, self.api_token))
+    os.system('curl -H"Content-Type: application/json" -d \'{"message":"%s","color":"%s"}\' "https://api.hipchat.com/v2/room/%s/notification?auth_token=%s&format=json"' % (message, color, self.room_id, self.api_token))
+    #just for when you are debugging hipchat instructions
+    #log.msg("Send to Hipchat:"+message)
+
