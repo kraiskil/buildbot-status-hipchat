@@ -1,5 +1,5 @@
 from buildbot.status.base import StatusReceiverMultiService
-from buildbot.status.builder import Results, SUCCESS
+from buildbot.status.builder import Results, SUCCESS, EXCEPTION
 import os, urllib
 #from buildbot.status import base
 #from twisted.python import log
@@ -39,6 +39,8 @@ class HipChatStatusPush(StatusReceiverMultiService):
     if result == SUCCESS:
       color = "green"
       notify = "0"
+    elif result == EXCEPTION:
+      color = "purple"
     else:
       color = "red"
       notify = "1"
