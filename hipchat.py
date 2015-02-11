@@ -35,7 +35,7 @@ class HipChatStatusPush(StatusReceiverMultiService):
     if self.localhost_replace:
       url = url.replace("//localhost", "//%s" % self.localhost_replace)
 
-    message = urllib.quote("<a href='%s'>%s</a> %s" % (url, builderName, Results[result].upper()))
+    message = "<a href='%s'>%s</a> %s" % (url, builderName, Results[result].upper()) 
     if result == SUCCESS:
       color = "green"
       notify = "0"
