@@ -1,5 +1,5 @@
 from buildbot.status.base import StatusReceiverMultiService
-from buildbot.status.builder import Results, SUCCESS, EXCEPTION
+from buildbot.status.builder import Results, SUCCESS, EXCEPTION, FAILURE
 import os, urllib
 #from buildbot.status import base
 #from twisted.python import log
@@ -44,6 +44,13 @@ class HipChatStatusPush(StatusReceiverMultiService):
     else:
       color = "red"
       notify = "1"
+
+    if result == FAILURE:
+      message +="<br>Failing steps:"
+      steps = build.getSteps()
+      for step in steps:
+        if step.getResults()[0] == FAILURE:
+          message +="<br>-%s" % (step.getName() )
 
     # Yes, we are in Twisted and shouldn't do os.system :)
     os.system('curl -H"Content-Type: application/json" -d \'{"message":"%s","color":"%s"}\' "https://api.hipchat.com/v2/room/%s/notification?auth_token=%s&format=json"' % (message, color, self.room_id, self.api_token))
