@@ -37,6 +37,8 @@ class HipChatStatusPush(StatusReceiverMultiService):
 
     message = "<a href='%s'>%s</a> %s" % (url, builderName, Results[result].upper()) 
     if result == SUCCESS:
+      sourcestamp = build.getSourceStamps()[0]
+      message +="<br>Branch: %s, revision: %s" % (sourcestamp.branch, sourcestamp.revision) 
       color = "green"
       notify = "0"
     elif result == EXCEPTION:
@@ -46,6 +48,10 @@ class HipChatStatusPush(StatusReceiverMultiService):
       notify = "1"
 
     if result == FAILURE:
+      #TODO: can this be cleaner?
+      message +="<br>Blamelist: %s" % (", ".join(build.getResponsibleUsers()).encode('utf-8'))
+      sourcestamp = build.getSourceStamps()[0]
+      message +="<br>Branch: %s, revision: %s" % (sourcestamp.branch.encode('utf-8'), sourcestamp.revision.encode('utf-8'))
       message +="<br>Failing steps:"
       steps = build.getSteps()
       for step in steps:
